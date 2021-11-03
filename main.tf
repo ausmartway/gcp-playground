@@ -1,6 +1,7 @@
 resource "google_compute_instance" "vm_instance" {
   name         = "terraform-instance"
   machine_type = "e2-standard-2"
+      zone = "australia-southeast1-a"
   // zone         = "us-central1-a"
 
   boot_disk {
@@ -20,6 +21,7 @@ resource "google_compute_instance" "vm_instance" {
 resource "google_compute_instance" "vm_instance1" {
   name         = "terraform-instance1"
   machine_type = "e2-medium"
+      zone = "australia-southeast1-a"
   // zone         = "us-central1-a"
 
   boot_disk {
