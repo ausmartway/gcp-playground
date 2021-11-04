@@ -2,6 +2,7 @@ resource "google_compute_instance" "vm_instance" {
   name         = "terraform-instance"
   machine_type = "e2-small"
       zone = "australia-southeast1-a"
+      allow_stopping_for_update = true
   // zone         = "us-central1-a"
 
   boot_disk {
