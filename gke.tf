@@ -4,7 +4,7 @@ resource "google_service_account" "default" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "my-gke-cluster"
+  name     = "taipei-devopsdays"
   location = "australia-southeast1"
 
   # We can't create a cluster with no node pool defined, but we want to only use
@@ -16,7 +16,7 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "my-node-pool"
+  name       = "taipei-devopsdays-node-pool"
   location   = "australia-southeast1"
   cluster    = google_container_cluster.primary.name
   node_count = 1
