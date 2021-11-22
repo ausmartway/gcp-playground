@@ -19,7 +19,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "taipei-devopsdays-node-pool"
   location   = "australia-southeast1"
   cluster    = google_container_cluster.primary.name
-  node_count = 1
+  node_count = 4
 
   node_config {
     preemptible  = true
