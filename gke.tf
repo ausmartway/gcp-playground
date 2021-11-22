@@ -19,9 +19,9 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "taipei-devopsdays-node-pool"
   location   = "australia-southeast1"
   cluster    = google_container_cluster.primary.name
-  initial_node_count = 2
+  initial_node_count = 1
   autoscaling {
-    min_node_count = 2
+    min_node_count = 1
     max_node_count = 5
   }
 
