@@ -19,11 +19,19 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "taipei-devopsdays-node-pool"
   location   = "australia-southeast1"
   cluster    = google_container_cluster.primary.name
-  node_count = 4
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 5
+  }
+
+  management {
+    auto_repair = true
+    auto_upgrade = true
+  }
 
   node_config {
     preemptible  = true
-    machine_type = "e2-medium"
+    machine_type = "e2-small"
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.default.email
