@@ -4,7 +4,7 @@ resource "google_service_account" "default" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "taipei-devopsdays"
+  name     = "playground"
   location = "australia-southeast1"
 
   # We can't create a cluster with no node pool defined, but we want to only use
@@ -16,14 +16,10 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "taipei-devopsdays-node-pool"
+  name       = "playground-node-pool"
   location   = "australia-southeast1"
   cluster    = google_container_cluster.primary.name
   initial_node_count = 1
-  autoscaling {
-    min_node_count = 1
-    max_node_count = 5
-  }
 
   management {
     auto_repair = true
