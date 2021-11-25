@@ -20,6 +20,10 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   location   = "australia-southeast1"
   cluster    = google_container_cluster.primary.name
   initial_node_count = 1
+  autoscaling {
+    min_node_count = 0
+    max_node_count = 3
+  }
 
   management {
     auto_repair = true
