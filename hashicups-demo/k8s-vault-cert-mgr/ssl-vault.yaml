@@ -3,30 +3,30 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  namespace: hashicups
+  namespace: vault
   annotations:
     # kubernetes.io/ingress.class: nginx
     # add an annotation indicating the issuer to use.
     cert-manager.io/cluster-issuer: vault-issuer
-    cert-manager.io/common-name: hashicups.yulei.aws.hashidemos.io
+    cert-manager.io/common-name: vault.yulei.aws.hashidemos.io
 spec:
   ingressClassName: nginx
   tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
     - hosts:
-      - hashicups.yulei.aws.hashidemos.io
+      - vault.yulei.aws.hashidemos.io
       # - devopsdays-vault.yulei.aws.hashidemos.io
-      secretName: hashicups-cert # < cert-manager will store the created certificate in this secret.
+      secretName: vault-cert # < cert-manager will store the created certificate in this secret.
   rules:
-  - host: hashicups.yulei.aws.hashidemos.io
+  - host: vault.yulei.aws.hashidemos.io
     http:
       paths:
       - pathType: Prefix
         path: /
         backend:
           service:
-            name: frontend
+            name: vault-ui
             port:
-              number: 80
+              number: 8200
   # - host: devopsdays-vault.yulei.aws.hashidemos.io
   #   http:
   #     paths:
