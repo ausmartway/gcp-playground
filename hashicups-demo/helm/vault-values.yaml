@@ -1,0 +1,27 @@
+injector:
+  agentImage:
+    repository: "hashicorp/vault"
+    tag: "1.8.4"
+server:
+  image:
+    repository: "hashicorp/vault"
+    tag: "1.8.4"
+    pullPolicy: IfNotPresent
+  standalone:
+    enabled: true
+    config: |
+      ui = true
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+      storage "file" {
+        path = "/vault/data"
+      }
+ui:
+  enabled: true
+  serviceType: LoadBalancer
+  externalPort: 8200
+  serviceNodePort: null
+  targetPort: 8200
