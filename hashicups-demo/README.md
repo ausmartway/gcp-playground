@@ -119,6 +119,11 @@ kubectl get Clusterissuer --all-namespaces
 ### define role and policy for product-api pod, so it can read both static and dynamic secrets
 
 ```bash
+
+kubectl exec --stdin=true --tty=true vault-0 -n vault -- /bin/sh
+
+vault login
+
 vault policy write products-api - <<EOF
 path "secrets/data/taipeidevopsday" {
   capabilities = ["read"]
@@ -148,7 +153,7 @@ vault write auth/kubernetes/role/postgres \
     bound_service_account_names=postgres \
     bound_service_account_namespaces=hashicups \
     policies=postgres \
-    ttl=12h
+    ttl=24h
 
 
  vault kv get secrets/taipeidevopsday
@@ -157,7 +162,14 @@ vault write auth/kubernetes/role/postgres \
 ### Dynamic database secret engine for postgres, note the initial password is clear text
 
 ```bash
+
+kubectl create namespace hashicups
+
 kubectl apply -f k8s-vault-cert-mgr/products-db.yaml
+
+kubectl exec --stdin=true --tty=true vault-0 -n vault -- /bin/sh
+
+vault login
 
 vault secrets enable database
 
@@ -205,10 +217,18 @@ kubectl get clusterissuers vault-issuer -o wide
 ## deploy nginx ingress controller
 
 ```bash
-helm install nginx-ingress ingress-nginx/ingress-nginx
+kubectl create namespace nginx    
+
+helm install nginx-ingress ingress-nginx/ingress-nginx -n nginx
 ```
 
 ## setup ingress controller to use cert manager
+
+```bash
+kubectl apply -f k8s-vault-cert-mgr/ssl-hashicups.yaml
+```
+
+## setup ingress controller to use cert manager for Vault as well
 
 ```bash
 kubectl apply -f k8s-vault-cert-mgr/ssl-hashicups.yaml
