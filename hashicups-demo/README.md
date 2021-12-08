@@ -11,7 +11,7 @@ gcloud container clusters get-credentials playground --region=australia-southeas
 
 Note that you need to have google credential and projects ready.
 
-## deploy the default app
+## deploy the default app (optional)
 
 ```bash
 kubectl apply -f k8s-default/
@@ -34,7 +34,7 @@ Get the ip address of Vault:
 kubectl get svc -n vault
 ```
 
-Initialise Vault on the GUI and download a copy of the unseal key and root token for later use.
+Initialise Vault on the GUI and download a copy of the unseal key and root token for later use. Unseal vault.
 
 
 ### Setup k8s authmethod from the vault pod, so that all k8s pods can authentiate with vault using their k8s token
@@ -87,10 +87,11 @@ EOF
 ## deploy cert manager
 
 ```bash
+kubectl create namespace cert-manager
+
 helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
-  --create-namespace \
   --version v1.6.0 \
   --set installCRDs=true
 ```
@@ -101,12 +102,13 @@ find cert-manager k8s token:
 kubectl get secrets -n cert-manager|grep cert-manager-token
 ```
 
-update the k8s-vault-cert-mgr/cert-manager.yaml file with the kubernetes tokens from the above step.
+update the k8s-vault-cert-mgr/vault-issuer.yaml file with the kubernetes tokens from the above step.
 
-deploy the cert-manager pods:
+deploy vault-issuer and letsencrypt-issuer:
 
 ```
-kubectl apply -f k8s-vault-cert-mgr/cert-manager.yaml
+kubectl apply -f k8s-vault-cert-mgr/vault-issuer.yaml
+kubectl apply -f k8s-vault-cert-mgr/letsencrypt-issuer.yaml
 ```
 
 Validate that the issuer is ready:
