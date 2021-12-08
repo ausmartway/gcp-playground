@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hashicups-letsencrypt
+  namespace: hashicups
+spec:
+  secretName: hashicups-tls
+  issuerRef:
+    # The issuer created previously
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  dnsNames:
+  - hashicups.yulei.gcp.hashidemos.io
