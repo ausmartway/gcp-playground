@@ -50,4 +50,7 @@ resource "google_service_account" "dns01-solver" {
 resource "google_service_account_iam_binding" "admin-account-dns" {
   service_account_id = google_service_account.dns01-solver.name
   role               = "roles/dns.admin"
+    members = [
+    "user:yulei@hashicorp.com",
+  ]
 }
