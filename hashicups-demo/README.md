@@ -2,14 +2,13 @@
 
 ## setup GKE and setup credential for kubectl
 
+Get your google credential and projects ready, then:
+
 ```bash
-cd terraform-standing-up-gke
 terraform init
 terraform apply
 gcloud container clusters get-credentials playground --region=australia-southeast1
 ```
-
-Note that you need to have google credential and projects ready.
 
 ## deploy the default app (optional)
 
@@ -23,6 +22,7 @@ After this you can see that k8s secrets can be decoded by base64, configMap cont
 Note that you should have helm3 installed.
 
 ```bash
+cd hashicups-demo
 kubectl create namespace vault
 helm install vault hashicorp/vault --version 0.17.1 -f helm/vault-values.yaml -n vault
 ```
@@ -33,8 +33,7 @@ Get the ip address of Vault:
 ```
 kubectl get svc -n vault
 ```
-
-Initialise Vault on the GUI and download a copy of the unseal key and root token for later use. Unseal vault.
+Once you get the external IP, visit the externalip:8200 and initialise Vault on the GUI and download a copy of the unseal key and root token for later use. Unseal vault.
 
 
 ### Setup k8s authmethod from the vault pod, so that all k8s pods can authentiate with vault using their k8s token
@@ -82,6 +81,9 @@ path "pki_root/sign/devopsdays" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 EOF
+
+exit
+
 ```
 
 ## deploy cert manager
@@ -102,7 +104,7 @@ find cert-manager k8s token:
 kubectl get secrets -n cert-manager|grep cert-manager-token
 ```
 
-update the k8s-vault-cert-mgr/vault-issuer.yaml file with the kubernetes tokens from the above step.
+update the k8s-vault-cert-mgr/vault-issuer.yaml file with the kubernetes tokens from the above step. This token is used by cert-manager to login to Vault using k8s authentication method.
 
 deploy vault-issuer and letsencrypt-issuer:
 
@@ -111,9 +113,9 @@ kubectl apply -f k8s-vault-cert-mgr/vault-issuer.yaml
 kubectl apply -f k8s-vault-cert-mgr/letsencrypt-issuer.yaml
 ```
 
-Validate that the issuer is ready:
+Validate that the issuers are ready:
 ```
-kubectl get Clusterissuer --all-namespaces
+kubectl get Clusterissuer --all-namespaces -o wide
 ```
 
 ## Config Vault
@@ -121,7 +123,6 @@ kubectl get Clusterissuer --all-namespaces
 ### define role and policy for product-api pod, so it can read both static and dynamic secrets
 
 ```bash
-
 kubectl exec --stdin=true --tty=true vault-0 -n vault -- /bin/sh
 
 vault login
@@ -139,7 +140,7 @@ vault write auth/kubernetes/role/products-api \
     bound_service_account_names=products-api \
     bound_service_account_namespaces=hashicups \
     policies=products-api \
-    ttl=12h
+    ttl=24h
 ```
 
 ### define role nd policy for postgres admin so he can save the initial postgres password
@@ -158,7 +159,10 @@ vault write auth/kubernetes/role/postgres \
     ttl=24h
 
 
- vault kv get secrets/taipeidevopsday
+vault kv get secrets/taipeidevopsday
+
+exit
+
 ```
 
 ### Dynamic database secret engine for postgres, note the initial password is clear text
@@ -203,18 +207,18 @@ vault write database/roles/products-api \
 
 ```bash
 vault read database/creds/products-api
+
+exit
+
 ```
 
-
-```
-
-## setup cert manager
+<!-- ## setup cert manager
 
 ```bash
 kubectl apply -f k8s-vault-cert-mgr/cert-manager.yaml
 
-kubectl get clusterissuers vault-issuer -o wide
-```
+kubectl get clusterissuers -o wide
+``` -->
 
 ## deploy nginx ingress controller
 
@@ -227,13 +231,31 @@ helm install nginx-ingress ingress-nginx/ingress-nginx -n nginx
 ## setup ingress controller to use cert manager
 
 ```bash
-kubectl apply -f k8s-vault-cert-mgr/ssl-hashicups.yaml
+gcloud iam service-accounts create dns01-solver --display-name "dns01-solver"
+
+gcloud projects add-iam-policy-binding yulei-playground \
+   --member serviceAccount:dns01-solver@yulei-playground.iam.gserviceaccount.com \
+   --role roles/dns.admin
+
+gcloud iam service-accounts keys create key.json \
+   --iam-account dns01-solver@yulei-playground.iam.gserviceaccount.com
+
+kubectl create secret generic clouddns-dns01-solver-svc-acct \
+   --from-file=key.json -n cert-manager
+
+kubectl apply -f k8s-vault-cert-mgr/public-ssl-hashicups.yaml
 ```
 
 ## setup ingress controller to use cert manager for Vault as well
 
 ```bash
 kubectl apply -f k8s-vault-cert-mgr/ssl-hashicups.yaml
+```
+
+## validate that both certificates are ready
+
+```bash
+kubectl get certificate --all-namespaces -o wide
 ```
 
 ## setup the rest of deployments
@@ -245,5 +267,27 @@ kubectl apply -f k8s-vault-cert-mgr/public-api.yaml
 kubectl apply -f k8s-vault-cert-mgr/frontend.yaml
 ```
 
+## update dns record 
 
+Get ip address of nginx ingress controller:
+
+```bash
+kubectl get svc -n nginx     
+```
+
+In Google Cloud DNS, add two records to point to the external IP address of Nginx ingress controller
+
+hashicups.yulei.gcp.hashidemos.io
+vault.yulei.gcp.hashidemos.io
+
+## get Vault pki_root CA
+
+```bash
+kubectl get svc -n vault
+```
+
+hit below URL to download the CA in PEM format:
+http://34.87.217.159:8200/v1/pki_root/ca/pem
+
+open the .pem file and import into operating system trust store.
 
