@@ -287,3 +287,12 @@ http://34.87.217.159:8200/v1/pki_root/ca/pem
 
 open the .pem file and import into operating system trust store.
 
+## trouble shooting commands
+
+```
+kubectl get svc --all-namespaces
+kubectl get clusterissuer --all-namespaces
+kubectl get order --all-namespaces
+kubectl get certificaterequest --all-namespaces
+kubectl describe certificate/issuer/clusterissuer/order/certificaterequest/challendge/ingress --all-namespaces
+```
