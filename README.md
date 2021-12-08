@@ -2,7 +2,7 @@
 
 ## setup GKE and setup credential for kubectl
 
-Get your google credential and projects ready, then:
+Get [gcloud cli](https://cloud.google.com/sdk/docs/install),[kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/#install-with-homebrew-on-macos),[helms](https://helm.sh/docs/intro/install/)  and [gcp projects](https://developers.google.com/workspace/marketplace/create-gcp-project) ready, then:
 
 ```bash
 terraform init
@@ -17,9 +17,7 @@ kubectl apply -f k8s-default/
 ```
 After this you can see that k8s secrets can be decoded by base64, configMap contains secrets and yaml files contains secrets.
 
-## Create namespace 'vault' and deploy vault into it
-
-Note that you should have helm3 installed.
+## Create namespace 'vault' and deploy vault
 
 ```bash
 cd hashicups-demo
@@ -27,14 +25,12 @@ kubectl create namespace vault
 helm install vault hashicorp/vault --version 0.17.1 -f helm/vault-values.yaml -n vault
 ```
 
-
-Get the ip address of Vault:
+Get the public ip address of Vault:
 
 ```
 kubectl get svc -n vault
 ```
 Once you get the external IP, visit the externalip:8200 and initialise Vault on the GUI and download a copy of the unseal key and root token for later use. Unseal vault.
-
 
 ### Setup k8s authmethod from the vault pod, so that all k8s pods can authentiate with vault using their k8s token
 
