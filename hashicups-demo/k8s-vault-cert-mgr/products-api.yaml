@@ -59,6 +59,7 @@ spec:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/role: 'products-api'
         vault.hashicorp.com/agent-inject-secret-db-creds: 'database/creds/products-api'
+        # use dynamic credential from Vault database secret engine. Every pod will get it's own credential.
         vault.hashicorp.com/agent-inject-template-db-creds: |
           {
           {{ with secret "database/creds/products-api" -}}

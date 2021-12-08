@@ -14,7 +14,7 @@ spec:
         cloudDNS:
           # The ID of the GCP project
           project: yulei-playground
-          # This is the secret used to access the service account
+          # This is the secret used to access the service account so that cert-manager can authenticate with Vault
           serviceAccountSecretRef:
             name: clouddns-dns01-solver-svc-acct
             key: key.json

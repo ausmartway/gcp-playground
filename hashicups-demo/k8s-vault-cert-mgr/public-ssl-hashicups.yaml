@@ -5,16 +5,13 @@ metadata:
   name: ingress
   namespace: hashicups
   annotations:
-    # kubernetes.io/ingress.class: nginx
-    # add an annotation indicating the issuer to use.
     cert-manager.io/cluster-issuer: letsencrypt-prod
     cert-manager.io/common-name: hashicups.yulei.gcp.hashidemos.io
 spec:
   ingressClassName: nginx
   tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
     - hosts:
-      - hashicups.yulei.gcp.hashidemos.io
-      # - devopsdays-vault.yulei.aws.hashidemos.io
+      - hashicups.yulei.aws.hashidemos.io #setup a SAN for demo purposes
       secretName: hashicups-cert # < cert-manager will store the created certificate in this secret.
   rules:
   - host: hashicups.yulei.gcp.hashidemos.io
@@ -27,14 +24,4 @@ spec:
             name: frontend
             port:
               number: 80
-  # - host: devopsdays-vault.yulei.aws.hashidemos.io
-  #   http:
-  #     paths:
-  #     - pathType: Prefix
-  #       path: /
-  #       backend:
-  #         service:
-  #           name: vault-ui
-  #           port:
-  #             number: 8200
 ...
