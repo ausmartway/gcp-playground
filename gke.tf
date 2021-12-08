@@ -41,3 +41,13 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     ]
   }
 }
+
+resource "google_service_account" "dns01-solver" {
+  account_id   = "dns01-solver"
+  display_name = "dns01-solver"
+}
+
+resource "google_service_account_iam_binding" "admin-account-dns" {
+  service_account_id = google_service_account.dns01-solver.name
+  role               = "roles/dns.admin"
+}
