@@ -296,3 +296,4 @@ kubectl get order --all-namespaces
 kubectl get certificaterequest --all-namespaces
 kubectl describe certificate/issuer/clusterissuer/order/certificaterequest/challendge/ingress --all-namespaces
 ```
+rid8a290da0
