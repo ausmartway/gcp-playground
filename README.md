@@ -283,7 +283,7 @@ kubectl get svc -n vault
 ```
 
 hit below URL to download the CA in PEM format:
-http://34.87.217.159:8200/v1/pki_root/ca/pem
+https://vault.yulei.gcp.hashidemos.io/v1/pki_root/ca/pem
 
 open the .pem file and import into operating system trust store.
 
