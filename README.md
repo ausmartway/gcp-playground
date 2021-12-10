@@ -30,7 +30,7 @@ Get the public ip address of Vault:
 ```
 kubectl get svc -n vault
 ```
-Once you get the external IP, visit the externalip:8200 and initialise Vault on the GUI and download a copy of the unseal key and root token for later use. Unseal vault.
+Once you get the external IP, visit the EXTERNAL-IP:8200 and initialise Vault on the GUI and download a copy of the unseal key and root token for later use. Unseal vault.
 
 ### Setup k8s authmethod from the vault pod, so that all k8s pods can authentiate with vault using their k8s token
 
@@ -296,4 +296,3 @@ kubectl get order --all-namespaces
 kubectl get certificaterequest --all-namespaces
 kubectl describe certificate/issuer/clusterissuer/order/certificaterequest/challendge/ingress --all-namespaces
 ```
-rid8a290da0

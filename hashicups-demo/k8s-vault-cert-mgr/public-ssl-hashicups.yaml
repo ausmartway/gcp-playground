@@ -11,7 +11,7 @@ spec:
   ingressClassName: nginx
   tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
     - hosts:
-      - hashicups.yulei.aws.hashidemos.io #setup a SAN for demo purposes
+      - hashicups.yulei.gcp.hashidemos.io 
       secretName: hashicups-cert # < cert-manager will store the created certificate in this secret.
   rules:
   - host: hashicups.yulei.gcp.hashidemos.io
