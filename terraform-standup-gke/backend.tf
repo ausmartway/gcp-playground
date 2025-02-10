@@ -1,9 +1,9 @@
-terraform {
-  backend "remote" {
-    organization = "yulei"
+# terraform {
+#   backend "remote" {
+#     organization = "yulei"
 
-    workspaces {
-      name = "gcp-playground"
-    }
-  }
-}
+#     workspaces {
+#       name = "gcp-playground"
+#     }
+#   }
+# }
