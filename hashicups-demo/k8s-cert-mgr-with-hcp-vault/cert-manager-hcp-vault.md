@@ -1,9 +1,10 @@
-#steps for installing cert-manager on gke
+# steps for installing cert-manager on gke
 
 ## Prerequisites
+
 - GKE cluster
 - kubectl
-- helm
+- helm3
 
 ## Steps
 
@@ -86,4 +87,23 @@ vault secrets enable pki
 vault write pki/root/generate/internal \
   common_name=example.com \
   ttl=8760h
-  
+```
+
+### setup issuer
+
+```bash
+kubectl apply -f hcp-vault-issuer.yaml -n cert-manager                                                                                                 
+```
+
+### request a certificate
+
+```bash
+kubectl apply -f example-cert.yaml
+```
+
+### verify certificate
+
+```bash
+kubectl get certificate 
+kubectl describe certificate example-cert
+```
